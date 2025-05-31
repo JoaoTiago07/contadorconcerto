@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Mapa Auditório - Dois Dias</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+    padding: 20px;
+  }
+  select {
+    font-size: 16px;
+    padding: 6px 10px;
+    margin-bottom: 15px;
+  }
+  .auditorio {
+    display: grid;
+    grid-template-columns: repeat(15, 30px);
+    grid-gap: 8px;
+    justify-content: center;
+    margin-top: 20px;
+  }
+  .cadeira {
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    background-color: green;
+    cursor: pointer;
+    border: 1px solid #444;
+    transition: background-color 0.3s;
+  }
+  .ocupada {
+    background-color: red !important;
+    cursor: not-allowed;
+  }
+  .cadeira:hover:not(.ocupada) {
+    background-color: #00cc00;
+  }
+</style>
+</head>
+<body>
+
+<h1>Mapa do Auditório</h1>
+<p>Cadeiras verdes estão livres, vermelhas ocupadas.</p>
+
+<label for="dia">Seleciona o dia:</label>
+<select id="dia">
+  <option value="3jun">3 de Junho</option>
+  <option value="4jun">4 de Junho</option>
+</select>
+
+<div class="auditorio" id="auditorio"></div>
+
+<script>
+  const totalFilas = 12;
+  const cadeirasPorFila = 15;
+
+  // Cadeiras ocupadas por dia (exemplo)
+  const ocupacao = {
+    "3jun": ["1-1", "1-2", "2-7", "3-15", "5-10", "8-3", "12-15"],
+    "4jun": ["1-3", "2-5", "3-8", "4-12", "7-7", "10-1", "11-14"]
+  };
+
+  const auditorioDiv = document.getElementById('auditorio');
+  const selectDia = document.getElementById('dia');
+
+  function desenharMapa(dia) {
+    auditorioDiv.innerHTML = ''; // Limpar mapa
+
+    const cadeirasOcupadas = ocupacao[dia] || [];
+
+    for(let fila = 1; fila <= totalFilas; fila++) {
+      for(let cadeira = 1; cadeira <= cadeirasPorFila; cadeira++) {
+        const cadeiraDiv = document.createElement('div');
+        cadeiraDiv.classList.add('cadeira');
+
+        const id = `${fila}-${cadeira}`;
+        cadeiraDiv.dataset.id = id;
+
+        if (cadeirasOcupadas.includes(id)) {
+          cadeiraDiv.classList.add('ocupada');
+        }
+
+        cadeiraDiv.title = `Fila ${fila}, Cadeira ${cadeira}`;
+        auditorioDiv.appendChild(cadeiraDiv);
+      }
+    }
+  }
+
+  // Desenhar mapa inicial com dia 3 de junho
+  desenharMapa(selectDia.value);
+
+  // Atualizar mapa ao mudar dia
+  selectDia.addEventListener('change', () => {
+    desenharMapa(selectDia.value);
+  });
+</script>
+
+</body>
+</html>
